@@ -1,0 +1,15 @@
+---
+title: "Bash shebang"
+author: "Nicholas Hathaway"
+output:
+  html_document:
+    toc: yes
+---
+
+```{r setup, echo=FALSE}
+library(knitr)
+opts_chunk$set(message=FALSE, warning=FALSE, comment = "", cache = TRUE)
+options(width = 80)
+
+```
+

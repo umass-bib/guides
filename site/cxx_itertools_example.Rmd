@@ -1,0 +1,86 @@
+---
+title: "C++ Examples"
+author: "Nicholas Hathaway"
+output:
+  html_document:
+    toc: yes
+---
+
+```{r, child="_cppEngineSetup.Rmd"}
+```
+
+#Looping with cppitertools
+
+##range
+
+###Looping to a stop
+
+```{r, engine="C++", engine.path="/Users/nick/hathaway/cppInline/cppInline_detail",engine.opts="CXX=clang++ CXXFLAGS=\"-I/Users/nick/hathaway/external/local/cppitertools/v0.1/cppitertools/\"", highlight=TRUE, comment=""}
+
+#include <iostream>
+#include <range.hpp> //from https://github.com/ryanhaining/cppitertools
+
+int main(int argc, char* argv[]){
+    for(auto pos : iter::range(10)){
+    	std::cout << pos << "\n";
+    }
+    return 0;
+}
+```
+
+###Looping from a start to a stop
+```{r, engine="C++", engine.path="/Users/nick/hathaway/cppInline/cppInline_detail",engine.opts="CXX=clang++ CXXFLAGS=\"-I/Users/nick/hathaway/external/local/cppitertools/v0.1/cppitertools/\"", highlight=TRUE, comment=""}
+
+#include <iostream>
+#include <range.hpp> //from https://github.com/ryanhaining/cppitertools
+
+int main(int argc, char* argv[]){
+    for(auto pos : iter::range(3,10)){
+    	std::cout << pos << "\n";
+    }
+    return 0;
+}
+```
+###Looping from a start to a stop with step
+```{r, engine="C++", engine.path="/Users/nick/hathaway/cppInline/cppInline_detail",engine.opts="CXX=clang++ CXXFLAGS=\"-I/Users/nick/hathaway/external/local/cppitertools/v0.1/cppitertools/\"", highlight=TRUE, comment=""}
+
+#include <iostream>
+#include <range.hpp> //from https://github.com/ryanhaining/cppitertools
+
+int main(int argc, char* argv[]){
+    for(auto pos : iter::range(0,10, 2)){
+    	std::cout << pos << "\n";
+    }
+    return 0;
+}
+```
+
+###Looping, going down
+```{r, engine="C++", engine.path="/Users/nick/hathaway/cppInline/cppInline_detail",engine.opts="CXX=clang++ CXXFLAGS=\"-I/Users/nick/hathaway/external/local/cppitertools/v0.1/cppitertools/\"", highlight=TRUE, comment=""}
+
+#include <iostream>
+#include <range.hpp> //from https://github.com/ryanhaining/cppitertools
+
+int main(int argc, char* argv[]){
+    for (auto i : iter::range(2, -3, -1)) {
+      std::cout << i << std::endl;
+    }
+    return 0;
+}
+```
+
+###Looping, using fractional step
+```{r, engine="C++", engine.path="/Users/nick/hathaway/cppInline/cppInline_detail",engine.opts="CXX=clang++ CXXFLAGS=\"-I/Users/nick/hathaway/external/local/cppitertools/v0.1/cppitertools/\"", highlight=TRUE, comment=""}
+
+#include <iostream>
+#include <range.hpp> //from https://github.com/ryanhaining/cppitertools
+
+int main(int argc, char* argv[]){
+    for(auto i : iter::range(5.0, 10.0, 0.5)) {
+      std::cout << i << std::endl;
+    }
+    return 0;
+}
+```
+
+

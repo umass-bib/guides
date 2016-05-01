@@ -1,0 +1,30 @@
+name: "programing-examples"
+exclude: ["README.md"]
+navbar:
+  title: "Programing Examples"
+  left:
+    - text: "Home"
+      href: index.html
+    - text: "About"
+      href: about.html
+    - text: "C++ Examples"
+      menu:
+        - text: "Itertools Examples" 
+          href: ccxx_itertools_example.html
+        - text: "Numeric Limits"
+          href: cxx_numeric_limits.html
+    - text: "Bash Examples"
+      menu:
+        - text: "shebang"
+          href: bash_shebang.html
+    - text: "Python Examples"
+      menu:
+        - text: "Downloading files"
+          href: python_downloading_files.html
+      
+output:
+  html_document:
+    theme: readable
+    highlight: tango
+    
+    

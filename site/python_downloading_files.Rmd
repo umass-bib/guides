@@ -1,0 +1,63 @@
+---
+title: "Downloading Files"
+author: "Nicholas Hathaway"
+output:
+  html_document:
+    toc: yes
+---
+
+```{r setup, echo=FALSE}
+library(knitr)
+opts_chunk$set(message=FALSE, warning=FALSE, comment = "", cache = TRUE)
+options(width = 120)
+
+```
+
+#Downloading a list of files simple
+
+The following will take a file where each line is a different url of a file to download
+
+***downloadFiles.py***
+```{r , engine='python', eval = F}
+#!/usr/bin/env python
+
+import argparse, urllib
+
+def parse_downloadFiles_args():
+    parser = argparse.ArgumentParser(description="Take in a file where the first column holds the url of a file to be downloaded, will overwrite current files if they exist")
+    parser.add_argument('-f', '--file', type=str, required = True)
+    return parser.parse_args()
+
+def download_files(urlsFile):
+    with open(urlsFile, "r") as f:
+        for line in f:
+            lineSplit = line.split()
+            print ("Downloading {url} to {file}".format(url = lineSplit[0], file = os.path.basename(lineSplit[0])))
+            urllib.urlretrieve(lineSplit[0], os.path.basename(lineSplit[0]))
+    
+if __name__ == "__main__":
+	args = parse_downloadFiles_args()
+    download_files(args.file)
+
+```
+
+```{r , engine='bash', eval = T, echo=T}
+cat files/download_sra_urls.txt
+```
+
+```{r , engine='bash', eval = F}
+./downloadFiles.py -file download_sra_urls.txt
+```
+
+```{r test_download, engine='bash', eval = T, echo = FALSE}
+scripts/python/downloadFiles.py --file files/download_sra_urls.txt
+```
+
+```{r download_cleanup, engine='bash', echo = F}
+rm SRR053682.sra
+rm SRR053683.sra
+rm SRR053684.sra
+rm SRR053685.sra
+rm SRR053686.sra
+```
+

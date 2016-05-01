@@ -1,0 +1,25 @@
+
+```{r cpp_engine_setup, echo=FALSE}
+
+library(knitr)
+
+eng_cpp <- function(options) {
+  # create a temporary file
+  f <- basename(tempfile("cpp", '.', paste('.', "cpp", sep = '')))
+  on.exit(unlink(f)) # cleanup temp file on function exit
+  writeLines(options$code, f)
+  out <- ''
+  # if eval != FALSE compile/run the code, preserving output
+  if (options$eval) {
+    cmd = sprintf(paste(options$engine.opts,options$engine.path,'%s',options$code[1]), f)
+    out <- system(paste(sprintf(paste(options$engine.opts,options$engine.path,'%s',options$code[1]), f), "2>&1" ) , intern=TRUE )
+  }
+  # spit back stuff to the user
+  engine_output(options, options$code, out)
+}
+knitr::knit_engines$set("C++"=eng_cpp)
+
+opts_chunk$set(message=FALSE, warning=FALSE, comment = "", cache = TRUE)
+options(width = 80)
+
+```
