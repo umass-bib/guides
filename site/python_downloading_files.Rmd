@@ -15,7 +15,7 @@ options(width = 120)
 
 #Downloading a list of files simple
 
-The following will take a file where each line is a different url of a file to download
+The following will take a file where each line is a different url of a file to download, here's a link to download script here [downloadFiles.py](scripts/python/downloadFiles.py)
 
 ***downloadFiles.py***
 ```{r , engine='python', eval = F}

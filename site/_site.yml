@@ -10,7 +10,7 @@ navbar:
     - text: "C++ Examples"
       menu:
         - text: "Itertools Examples" 
-          href: ccxx_itertools_example.html
+          href: cxx_itertools_example.html
         - text: "Numeric Limits"
           href: cxx_numeric_limits.html
     - text: "Bash Examples"
