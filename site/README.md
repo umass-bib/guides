@@ -8,6 +8,8 @@ if (!require("devtools")) install.packages("devtools")
 devtools::install_github("rstudio/rmarkdown")
 ```
 
+From within the site directory on the command line
+
 ```bash
 ./renderSite.R
 ```
