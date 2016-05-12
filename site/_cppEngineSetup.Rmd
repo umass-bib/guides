@@ -4,10 +4,13 @@
 library(knitr)
 
 eng_cpp <- function(options) {
+  if(is.null(options$engine.path)){
+    options$engine.path = "../scripts/cppInline_detail"
+  }
   # create a temporary file
   f <- basename(tempfile("cpp", '.', paste('.', "cpp", sep = '')))
   on.exit(unlink(f)) # cleanup temp file on function exit
-  writeLines(options$code, f)
+  writeLines(c("", options$code), f)
   out <- ''
   # if eval != FALSE compile/run the code, preserving output
   if (options$eval) {
@@ -19,7 +22,7 @@ eng_cpp <- function(options) {
 }
 knitr::knit_engines$set("C++"=eng_cpp)
 
-opts_chunk$set(message=FALSE, warning=FALSE, comment = "", cache = TRUE)
+opts_chunk$set( comment = "", cache = TRUE, highlight=TRUE)
 options(width = 80)
 
 ```

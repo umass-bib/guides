@@ -1,22 +1,19 @@
 ---
 title: "C++ Examples"
 author: "Nicholas Hathaway"
-output:
-  html_document:
-    toc: yes
 ---
 
 ```{r, child="_cppEngineSetup.Rmd"}
 ```
 
 # Numeric Limits  
-Below demonstrates the limits of all the numeric primitive in c++ and therefore can help in chosing which would work best for certain scernarios.  
+Below demonstrates the limits of all the numeric primitive types in c++ and therefore can help in chosing which would work best for certain scernarios.  
 
-```{r, engine="C++", engine.path="/Users/nick/hathaway/cppInline/cppInline_detail",engine.opts="CXX=clang++", highlight=TRUE, comment=""}
-
+```{r, engine="C++", engine.opts="CXX=clang++"}
 #include <iostream>
-#include <stdint.h>
+#include <cstdint>
 #include <limits>
+
 
 template<typename T>
 std::string typeStr(){

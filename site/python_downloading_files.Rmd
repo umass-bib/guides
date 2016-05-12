@@ -1,9 +1,6 @@
 ---
 title: "Downloading Files"
 author: "Nicholas Hathaway"
-output:
-  html_document:
-    toc: yes
 ---
 
 ```{r setup, echo=FALSE}

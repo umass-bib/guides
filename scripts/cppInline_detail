@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+if [ $(uname) == "Linux" ]; then
+	tmpFile=$(mktemp)
+else
+	tmpFile=$(gmktemp)
+fi
+echo "Compile Command:"
+echo $CXX -std=c++14 $CXXFLAGS $LDFLAGS main.cpp -o exampleCpp
+#take everything from the the 2nd line on 
+tail -n +2 $1 | $CXX -x c++ -std=c++14 $CXXFLAGS $LDFLAGS - -o $tmpFile
+stat=$?
+if [ $stat -ne 0 ]; then
+	exit
+fi
+echo "Execution Call:"
+echo ./exampleCpp ${@:2}
+echo "Output:"
+$tmpFile ${@:2}
+rm $tmpFile

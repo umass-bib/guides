@@ -1,12 +1,14 @@
 ---
 title: "C++ Examples"
 author: "Nicholas Hathaway"
-output:
-  html_document:
-    toc: yes
 ---
 
 ```{r, child="_cppEngineSetup.Rmd"}
+```
+
+```{r engineSetup, echo =FALSE}
+#need to figure out a way to set engine.opts globaly, this currently doesn't work
+opts_chunk$set(engine.opts="CXX=clang++ CXXFLAGS=\"-I../cppSetupTools/external/local/cppitertools/v0.1/cppitertools/\"")
 ```
 
 #Looping with cppitertools
@@ -15,11 +17,9 @@ output:
 
 ###Looping to a stop
 
-```{r, engine="C++", engine.path="/Users/nick/hathaway/cppInline/cppInline_detail",engine.opts="CXX=clang++ CXXFLAGS=\"-I/Users/nick/hathaway/external/local/cppitertools/v0.1/cppitertools/\"", highlight=TRUE, comment=""}
-
+```{r, engine="C++", engine.opts="CXX=clang++ CXXFLAGS=\"-I../cppSetupTools/external/local/cppitertools/v0.1/cppitertools/\""}
 #include <iostream>
 #include <range.hpp> //from https://github.com/ryanhaining/cppitertools
-
 int main(int argc, char* argv[]){
     for(auto pos : iter::range(10)){
     	std::cout << pos << "\n";
@@ -29,8 +29,7 @@ int main(int argc, char* argv[]){
 ```
 
 ###Looping from a start to a stop
-```{r, engine="C++", engine.path="/Users/nick/hathaway/cppInline/cppInline_detail",engine.opts="CXX=clang++ CXXFLAGS=\"-I/Users/nick/hathaway/external/local/cppitertools/v0.1/cppitertools/\"", highlight=TRUE, comment=""}
-
+```{r, engine="C++", engine.opts="CXX=clang++ CXXFLAGS=\"-I../cppSetupTools/external/local/cppitertools/v0.1/cppitertools/\""}
 #include <iostream>
 #include <range.hpp> //from https://github.com/ryanhaining/cppitertools
 
@@ -41,9 +40,9 @@ int main(int argc, char* argv[]){
     return 0;
 }
 ```
-###Looping from a start to a stop with step
-```{r, engine="C++", engine.path="/Users/nick/hathaway/cppInline/cppInline_detail",engine.opts="CXX=clang++ CXXFLAGS=\"-I/Users/nick/hathaway/external/local/cppitertools/v0.1/cppitertools/\"", highlight=TRUE, comment=""}
 
+###Looping from a start to a stop with step
+```{r, engine="C++", engine.opts="CXX=clang++ CXXFLAGS=\"-I../cppSetupTools/external/local/cppitertools/v0.1/cppitertools/\""}
 #include <iostream>
 #include <range.hpp> //from https://github.com/ryanhaining/cppitertools
 
@@ -56,8 +55,7 @@ int main(int argc, char* argv[]){
 ```
 
 ###Looping, going down
-```{r, engine="C++", engine.path="/Users/nick/hathaway/cppInline/cppInline_detail",engine.opts="CXX=clang++ CXXFLAGS=\"-I/Users/nick/hathaway/external/local/cppitertools/v0.1/cppitertools/\"", highlight=TRUE, comment=""}
-
+```{r, engine="C++", engine.opts="CXX=clang++ CXXFLAGS=\"-I../cppSetupTools/external/local/cppitertools/v0.1/cppitertools/\""}
 #include <iostream>
 #include <range.hpp> //from https://github.com/ryanhaining/cppitertools
 
@@ -70,8 +68,7 @@ int main(int argc, char* argv[]){
 ```
 
 ###Looping, using fractional step
-```{r, engine="C++", engine.path="/Users/nick/hathaway/cppInline/cppInline_detail",engine.opts="CXX=clang++ CXXFLAGS=\"-I/Users/nick/hathaway/external/local/cppitertools/v0.1/cppitertools/\"", highlight=TRUE, comment=""}
-
+```{r, engine="C++", engine.opts="CXX=clang++ CXXFLAGS=\"-I../cppSetupTools/external/local/cppitertools/v0.1/cppitertools/\""}
 #include <iostream>
 #include <range.hpp> //from https://github.com/ryanhaining/cppitertools
 

@@ -26,5 +26,6 @@ output:
   html_document:
     theme: readable
     highlight: tango
+    toc: true
     
     

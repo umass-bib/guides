@@ -1,9 +1,6 @@
 ---
 title: "Bash shebang"
 author: "Nicholas Hathaway"
-output:
-  html_document:
-    toc: yes
 ---
 
 ```{r setup, echo=FALSE}
@@ -12,4 +9,114 @@ opts_chunk$set(message=FALSE, warning=FALSE, comment = "", cache = TRUE)
 options(width = 80)
 
 ```
+
+When writing a plain text file for any various langauges like python, bash, R, etc. you can call the interperter directly on the file like below.
+
+***a_python_script.py***
+```{r, engine='python', eval = F}
+import sys
+def hello(name):
+  sys.stdout.write("hello" +  name + "\n")
+
+name = "nick"
+hello(name)
+
+```
+
+```{r, engine='bash', eval = F}
+python a_python_script.py
+```
+
+```{r, engine='python', eval = T, echo =F}
+import sys
+def hello(name):
+  sys.stdout.write("hello " +  name + "\n")
+
+name = "nick"
+hello(name)
+```
+
+***a_R_script.R***
+```{r, eval = F}
+print("hello world")
+```
+
+```{r, engine='bash', eval = F}
+Rscript a_R_script.R
+```
+
+```{r, eval = T, echo =F}
+print("hello world")
+```
+
+Or you can make the file executable using chmod and then add a line to the very top of your file called the [she-bang](https://en.wikipedia.org/wiki/Shebang_(Unix)) line which supply the interperter. 
+
+Add she-bang line  
+***a_python_script.py***
+```{r, engine='python', eval = F}
+#!/usr/bin/python
+import sys
+def hello(name):
+  sys.stdout.write("hello" +  name + "\n")
+
+name = "nick"
+hello(name)
+
+```
+You have to also make the file executable, if you don't you'll see this line
+
+```{r, engine = "bash", eval = F}
+./a_python_script.py
+```
+
+```{r, engine = 'bash', echo =F}
+echo "-bash: ./a_python_script.py: Permission denied"
+```
+
+Make file executable, just has to be done one time
+```{r, engine='bash', eval = F}
+chmod +x a_python_script.py
+```
+
+Now you can just run the file and it will be interpreted by python
+```{r, engine='bash', eval = F}
+./a_python_script.py
+```
+
+```{r, engine='python', eval = T, echo =F}
+import sys
+def hello(name):
+  sys.stdout.write("hello " +  name + "\n")
+
+name = "nick"
+hello(name)
+```
+
+The she-bang always starts with `#!` and should be on the very first line of the file. What fallows the `#!` is the path to the program you want to have interpret the file. The above with giving the path `/usr/bin/python` will probably work for most default systems but might not work on things like a large computer cluster where you have use `lsf` and `module load`. So a better way to get the right interperter is to use the program `env` which will search your environment for the interperter that you give it ensuring the right interperter is found. 
+
+***a_python_script.py***
+```{r, engine='python', eval = F}
+#!/usr/bin/env python
+import sys
+def hello(name):
+  sys.stdout.write("hello" +  name + "\n")
+
+name = "nick"
+hello(name)
+
+```
+
+So instead of giving the direct path to the python interperter you can query your environment for `python` and `env` will look at your `PATH` to find the correct one, this will also help to find programs if you have them instead in non-default places. Also using the `/usr/bin/env python` will make it easier to port your code around, giving it a higher chance of working when you use it on default machines and setups. 
+
+You can do the same for any program like Rscript as well 
+
+***a_R_script.R***
+```{r, eval = F}
+#!/usr/bin/env Rscript
+print("hello world")
+```
+
+
+
+
 
