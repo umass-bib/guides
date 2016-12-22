@@ -81,3 +81,32 @@ int main(int argc, char* argv[]){
 ```
 
 
+###Looping examples that will end up producing no iterations
+
+```{r, engine="C++", engine.opts="CXX=clang++ CXXFLAGS=\"-I../cppSetupTools/external/local/cppitertools/v0.1/cppitertools/\""}
+#include <iostream>
+#include <range.hpp> //from https://github.com/ryanhaining/cppitertools
+
+int main(int argc, char* argv[]){
+  //iterating to the same stop as your start will produce nothing
+  std::cout << "Start loop example 1" << std::endl;
+  for(auto i : iter::range(1,1)) {
+    std::cout << i << std::endl;
+  }
+  std::cout << "End Loop example 1" << std::endl;
+  
+  //iterating to the a stop less than your start but wihtout a negative step will produuce nothing
+  std::cout << "Start loop example 2" << std::endl;
+  for(auto i : iter::range(1,0)) {
+    std::cout << i << std::endl;
+  }
+  std::cout << "End Loop example 2" << std::endl;
+  
+  return 0;
+}
+```
+
+
+
+
+
