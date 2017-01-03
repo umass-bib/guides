@@ -102,6 +102,13 @@ int main(int argc, char* argv[]){
   }
   std::cout << "End Loop example 2" << std::endl;
   
+  //iterating to just 0 will produce nothing
+  std::cout << "Start loop example 2" << std::endl;
+  for(auto i : iter::range(0)) {
+    std::cout << i << std::endl;
+  }
+  std::cout << "End Loop example 2" << std::endl;
+  
   return 0;
 }
 ```
