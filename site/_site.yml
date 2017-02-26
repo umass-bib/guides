@@ -21,6 +21,8 @@ navbar:
       menu:
         - text: "Downloading files"
           href: python_downloading_files.html
+        - text: "Get SRA Numbers from SRA Identifiers"
+          href: python_get_sra_run_ids.html
       
 output:
   html_document:
