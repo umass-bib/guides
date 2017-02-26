@@ -58,3 +58,45 @@ rm SRR053685.sra
 rm SRR053686.sra
 ```
 
+
+#urlgrabber  
+urlgrabber is a python packages that offers a lot more than the default python utilties for downloading files including resumiing stopped downloads or checking if the file is already downloaded
+
+To install 
+```{r engine='bash', echo = T, eval = F}
+pip install pycurl urlgrabber
+```
+
+```{r , engine='python', eval = F}
+from urlgrabber.grabber import URLGrabber
+g = URLGrabber()
+data = g.urlread(url)
+```
+
+This is nice because you can specify options when you create the grabber. For example, lets turn on simple reget mode so that if we have part of a file, we only need to fetch the rest.
+
+```{r , engine='python', eval = F}
+from urlgrabber.grabber import URLGrabber
+g = URLGrabber(reget='simple')
+local_filename = g.urlgrab(url)
+```
+
+The available options are listed in the module documentation, and can usually be specified as a default at the grabber-level or as options to the method.
+```{r , engine='python', eval = F}
+from urlgrabber.grabber import URLGrabber
+g = URLGrabber(reget='simple')
+local_filename = g.urlgrab(url, filename=None, reget=None)
+```
+
+#requests  
+Requests is also a great library for dealing with other http operations as well  
+```{r engine='bash', echo = T, eval = F}
+pip install requests
+
+```
+See their website which has a great documentation.  
+http://docs.python-requests.org/en/master/user/quickstart
+
+
+
+ 
