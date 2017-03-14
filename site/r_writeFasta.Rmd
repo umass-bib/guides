@@ -1,0 +1,44 @@
+---
+title: "Function To Write Fasta From Data Frame"
+author: "Nicholas Hathaway"
+---
+
+```{r setup, echo=FALSE}
+library(knitr)
+opts_chunk$set(message=FALSE, warning=FALSE, comment = "", cache = TRUE)
+options(width = 120)
+
+```
+
+
+Below is a simple function that takes a data.frame that has a column `name` and `seq` and writes a fasta file from it
+
+
+```{r}
+writeFasta<-function(data, filename){
+  fastaLines = c()
+  for (rowNum in 1:nrow(data)){
+    fastaLines = c(fastaLines, as.character(paste(">", data[rowNum,"name"], sep = "")))
+    fastaLines = c(fastaLines,as.character(data[rowNum,"seq"]))
+  }
+  fileConn<-file(filename)
+  writeLines(fastaLines, fileConn)
+  close(fileConn)
+}
+
+```
+
+
+```{r, eval=FALSE}
+
+require(dplyr)
+
+exampleData = dplyr::data_frame(name = c("seq1", "seq2", "seq3"),
+                                seq = c("AAGGTTTTGCCAA", "TTTTGCCAAGGAA", "TTTAAGGTGCCAA"), 
+                                other = c("meta1", "meta2", "meta3"))
+
+writeFasta(exampleData, "example.fasta")
+
+
+```
+
