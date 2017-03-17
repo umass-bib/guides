@@ -23,6 +23,8 @@ navbar:
           href: python_downloading_files.html
         - text: "Get SRA Numbers from SRA Identifiers"
           href: python_get_sra_run_ids.html
+        - text: "Downloading ucsc genome browser"
+          href: python_downloading_genomes.html
     - text: "R Examples"
       menu:
         - text: "Write Fasta"
