@@ -1,0 +1,85 @@
+---
+title: "Downloading 2bit Genome Files"
+author: "Nicholas Hathaway"
+---
+
+```{r setup, echo=FALSE}
+library(knitr)
+opts_chunk$set(message=FALSE, warning=FALSE, comment = "", cache = TRUE)
+options(width = 120)
+
+newPath = Sys.getenv("PATH")
+newPath = paste("/usr/local/bin:/home/hathawan/hathaway/bin:", newPath,sep = "")
+Sys.setenv(PATH=newPath)
+
+```
+
+#Downloading 2bit genomes
+
+The python library for ucscgenome can be used to download genome
+
+```{r, engine='bash', eval = F}
+pip install ucscgenome
+#for local install on servers use --user if you don't have rights to install globaly
+pip install --user ucscgenome
+
+```
+
+
+Then within python you can download by creating a genome object with the name of the genome you want, which will automatically donwload the genome to `~/.ucscgenome`
+
+For example below would download the human genome version 19 and 38 
+```{r , engine='python'}
+#!/usr/bin/env python
+
+from ucscgenome import Genome
+
+hg19 = Genome('hg19')
+
+hg38 = Genome('hg38')
+
+```
+
+
+```{r, engine='bash', eval = T}
+ls ~/.ucscgenome
+```
+
+
+Go to here http://hgdownload.cse.ucsc.edu/downloads.html to see a list of available genomes
+
+
+#Reading 2bit genomes
+To read the downloaded 2bit files you can use the python package twobitreader
+```{r, engine='bash', eval = F}
+pip install twobitreader
+#for local install on servers use --user if you don't have rights to install globaly
+pip install --user twobitreader
+
+```
+
+Get the sequence of one of the chromosomes
+```{r , engine='python'}
+#!/usr/bin/env python
+
+import twobitreader
+
+hg38_genome = twobitreader.TwoBitFile("/Users/nick/.ucscgenome/hg38.2bit") 
+chr9 = hg38_genome["chr9"]
+print(chr9.get_slice(133255319, 133255568))
+
+```
+
+
+```{r , engine='python', eval = F, echo =F}
+#!/usr/bin/env python
+
+import twobitreader
+
+with open("hg38.fasta", "w") as output:
+    twobit = twobitreader.TwoBitFile("/Users/nick/.ucscgenome/hg38.2bit")
+    twobitreader.twobit_reader(twobit,write=output)
+```
+
+
+
