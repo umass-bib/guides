@@ -1,0 +1,20 @@
+---
+title: "Interactive Scatter plots among others"
+author: "Nicholas Hathaway"
+---
+
+```{r setup, echo=FALSE}
+library(knitr)
+opts_chunk$set(message=FALSE, warning=FALSE, comment = "", cache = TRUE)
+options(width = 120)
+
+```
+
+##metricsgraphics  
+Site https://hrbrmstr.github.io/metricsgraphics/ 
+```{r, echo = T, eval = T}
+library(metricsgraphics)
+mjs_plot(mtcars, x=wt, y=mpg) %>%
+  mjs_point(color_accessor=carb, size_accessor=carb) %>%
+  mjs_labs(x="Weight of Car", y="Miles per Gallon")
+```

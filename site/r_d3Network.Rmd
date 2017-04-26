@@ -1,0 +1,27 @@
+---
+title: "Create various network interactive graphs powered by d3"
+author: "Nicholas Hathaway"
+---
+
+```{r setup, echo=FALSE}
+library(knitr)
+opts_chunk$set(message=FALSE, warning=FALSE, comment = "", cache = TRUE)
+options(width = 120)
+
+```
+
+
+##networkD3 force network 
+Site http://christophergandrud.github.io/d3Network/  
+```{r, echo = T}
+library(networkD3);
+data(MisLinks, MisNodes)
+forceNetwork(Links = MisLinks, Nodes = MisNodes, Source = "source",
+             Target = "target", Value = "value", NodeID = "name",
+             Group = "group", opacity = 1)
+```
+
+
+
+
+
