@@ -14,14 +14,13 @@ Sys.setenv(PATH=newPath)
 
 #Querying SRA site for info
 
-The following script contains code to query SRA for SRA numbers from expeirment(SRX/ERX), sample(SRS/ERS), and project(SRP/XRP) identifiers, here's a link to download script here [getSraRunsFromAccIds.py](scripts/python/getSraRunsFromAccIds.py)
+The following script contains code to query SRA for SRA numbers from expeirment(SRX/ERX), sample(SRS/ERS), project(SRP/XRP), and BioProject (PRJNA) identifiers, here's a link to download script here [getSraRunsFromAccIds.py](scripts/python/getSraRunsFromAccIds.py)
 
 The script contains a class with static methods to get the RUN ids associated with other identifiers and a function to automatically generate the URL for the run ID. The script can be included in another script to use the SRAUtils class and it's functions or the script can be ran itself to get the ids and urls for several IDs
 
 The script depends on the non-standard `requests` library which might need to be installed
 
 ```{r, engine='bash'}
-
 pip install requests
 ```
 
@@ -31,9 +30,6 @@ pip install requests
 import shutil, os, argparse, sys, stat
 import requests
 import csv, io
-from __builtin__ import type
-
-
 
 class SRAUtils:
     @staticmethod

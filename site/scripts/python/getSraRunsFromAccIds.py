@@ -2,9 +2,6 @@
 import shutil, os, argparse, sys, stat
 import requests
 import csv, io
-from __builtin__ import type
-
-
 
 class SRAUtils:
     @staticmethod
