@@ -2,8 +2,12 @@
 import shutil, os, argparse, sys, stat
 import requests
 import csv, io
+import traceback
 
 class SRAUtils:
+    '''
+    Prefixes can be found here http://www.ddbj.nig.ac.jp/sub/prefix.html for DDBJ, ENA/EBI (ERA), and NCBI(SRA)
+    '''
     @staticmethod
     def getInfoTableFromSearchTerm(search):
         payload = {"save": "efetch","db": "sra","rettype" : "runinfo", "term" : search };
@@ -23,6 +27,14 @@ class SRAUtils:
                 return infoRows
         else:
             raise Exception("Error in downloading from " + str(r.url) + " got response code " + str(r.status_code))
+        
+    @staticmethod
+    def getRunAccsFromInfoTable(infoTab):
+        runInfo = []
+        for row in infoTab:
+            runInfo.append(str(row.get('Run')))
+        return runInfo
+            
         
     @staticmethod
     def getSraUrlFromRunAccession(accesion):
@@ -109,8 +121,9 @@ class SRAUtils:
     
     @staticmethod
     def getInfoFromBioProjectAcc(bioProject):
-        if not bioProject.startswith("PRJNA"):
-            raise Exception("bioProject should start with PRJNA, not: " + bioProject)
+        # or 
+        if not bioProject.startswith("PRJNA") and not bioProject.startswith("PRJEA") and not bioProject.startswith("PRJEB") and not bioProject.startswith("PRJDA"):
+            raise Exception("bioProject should start with PRJNA, PRJEA, PRJEB, and PRJDA, not: " + bioProject)
         infoTab = SRAUtils.getInfoTableFromSearchTerm(bioProject)
         runInfo = []
         for row in infoTab:
@@ -135,7 +148,14 @@ class SRAUtils:
             return SRAUtils.getInfoFromRunAcc(identifier)
         elif identifier.startswith("ERA") or identifier.startswith("SRA"):
             return SRAUtils.getInfoFromSubmissionAcc(identifier)
+        elif identifier.startswith("PRJDA"):
+            #DDBJ archvie bioproject prefix PRJNA 
+            return SRAUtils.getInfoFromBioProjectAcc(identifier)
         elif identifier.startswith("PRJNA"):
+            #short read archvie bioproject prefix PRJNA
+            return SRAUtils.getInfoFromBioProjectAcc(identifier)
+        elif identifier.startswith("PRJEA") or identifier.startswith("PRJEB"):
+            #european archive bioproject prefixes PRJEA or PRJEB
             return SRAUtils.getInfoFromBioProjectAcc(identifier)
         else:
             raise Exception("Error, unrecognized prefix for sra Identifier " + str(identifier))
@@ -163,16 +183,20 @@ def runGetRunsFromSampleAcc():
             outUrlsFile.write(str("identifier") + "\t" + str("run") + "\t" + "url" + "\n")
             identifierCount = 0
             for identifier in identifiers:
-                tab = SRAUtils.getInfoFromSRAIdentifier(identifier)
-                if 0 == identifierCount:
-                    outInfoFile.write("\t".join(tab[0].keys()) + "\n")
-                for row in tab:
-                    outUrlsFile.write(str(identifier) + "\t" + row.get("Run") + "\t" + SRAUtils.getSraUrlFromRunAccession(str(row.get("Run"))) + "\n")
-                    outInfoFile.write("\t".join(row.values()) + "\n")
-                identifierCount = identifierCount + 1
+                try:
+                    tab = SRAUtils.getInfoFromSRAIdentifier(identifier)
+                    if 0 == identifierCount:
+                        outInfoFile.write("\t".join(tab[0].keys()) + "\n")
+                    for row in tab:
+                        outUrlsFile.write(str(identifier) + "\t" + row.get("Run") + "\t" + SRAUtils.getSraUrlFromRunAccession(str(row.get("Run"))) + "\n")
+                        outInfoFile.write("\t".join(row.values()) + "\n")
+                    identifierCount = identifierCount + 1
+                except Exception, err:
+                    print ("Failed  to get info for " + str(identifier) + ", mess: " + str(err))
+                    traceback.print_exc()
+                    
 
 if __name__ == "__main__":
     runGetRunsFromSampleAcc()
-    
-    
-    
+
+

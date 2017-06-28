@@ -30,8 +30,12 @@ pip install requests
 import shutil, os, argparse, sys, stat
 import requests
 import csv, io
+import traceback
 
 class SRAUtils:
+    '''
+    Prefixes can be found here http://www.ddbj.nig.ac.jp/sub/prefix.html for DDBJ, ENA/EBI (ERA), and NCBI(SRA)
+    '''
     @staticmethod
     def getInfoTableFromSearchTerm(search):
         payload = {"save": "efetch","db": "sra","rettype" : "runinfo", "term" : search };
@@ -51,6 +55,14 @@ class SRAUtils:
                 return infoRows
         else:
             raise Exception("Error in downloading from " + str(r.url) + " got response code " + str(r.status_code))
+        
+    @staticmethod
+    def getRunAccsFromInfoTable(infoTab):
+        runInfo = []
+        for row in infoTab:
+            runInfo.append(str(row.get('Run')))
+        return runInfo
+            
         
     @staticmethod
     def getSraUrlFromRunAccession(accesion):
@@ -137,8 +149,9 @@ class SRAUtils:
     
     @staticmethod
     def getInfoFromBioProjectAcc(bioProject):
-        if not bioProject.startswith("PRJNA"):
-            raise Exception("bioProject should start with PRJNA, not: " + bioProject)
+        # or 
+        if not bioProject.startswith("PRJNA") and not bioProject.startswith("PRJEA") and not bioProject.startswith("PRJEB") and not bioProject.startswith("PRJDA"):
+            raise Exception("bioProject should start with PRJNA, PRJEA, PRJEB, and PRJDA, not: " + bioProject)
         infoTab = SRAUtils.getInfoTableFromSearchTerm(bioProject)
         runInfo = []
         for row in infoTab:
@@ -163,7 +176,14 @@ class SRAUtils:
             return SRAUtils.getInfoFromRunAcc(identifier)
         elif identifier.startswith("ERA") or identifier.startswith("SRA"):
             return SRAUtils.getInfoFromSubmissionAcc(identifier)
+        elif identifier.startswith("PRJDA"):
+            #DDBJ archvie bioproject prefix PRJNA 
+            return SRAUtils.getInfoFromBioProjectAcc(identifier)
         elif identifier.startswith("PRJNA"):
+            #short read archvie bioproject prefix PRJNA
+            return SRAUtils.getInfoFromBioProjectAcc(identifier)
+        elif identifier.startswith("PRJEA") or identifier.startswith("PRJEB"):
+            #european archive bioproject prefixes PRJEA or PRJEB
             return SRAUtils.getInfoFromBioProjectAcc(identifier)
         else:
             raise Exception("Error, unrecognized prefix for sra Identifier " + str(identifier))
@@ -191,13 +211,18 @@ def runGetRunsFromSampleAcc():
             outUrlsFile.write(str("identifier") + "\t" + str("run") + "\t" + "url" + "\n")
             identifierCount = 0
             for identifier in identifiers:
-                tab = SRAUtils.getInfoFromSRAIdentifier(identifier)
-                if 0 == identifierCount:
-                    outInfoFile.write("\t".join(tab[0].keys()) + "\n")
-                for row in tab:
-                    outUrlsFile.write(str(identifier) + "\t" + row.get("Run") + "\t" + SRAUtils.getSraUrlFromRunAccession(str(row.get("Run"))) + "\n")
-                    outInfoFile.write("\t".join(row.values()) + "\n")
-                identifierCount = identifierCount + 1
+                try:
+                    tab = SRAUtils.getInfoFromSRAIdentifier(identifier)
+                    if 0 == identifierCount:
+                        outInfoFile.write("\t".join(tab[0].keys()) + "\n")
+                    for row in tab:
+                        outUrlsFile.write(str(identifier) + "\t" + row.get("Run") + "\t" + SRAUtils.getSraUrlFromRunAccession(str(row.get("Run"))) + "\n")
+                        outInfoFile.write("\t".join(row.values()) + "\n")
+                    identifierCount = identifierCount + 1
+                except Exception, err:
+                    print ("Failed  to get info for " + str(identifier) + ", mess: " + str(err))
+                    traceback.print_exc()
+                    
 
 if __name__ == "__main__":
     runGetRunsFromSampleAcc()
@@ -225,6 +250,74 @@ cat out_info.tab.txt
 ```{r test_download_report2, engine='bash', eval = T, echo = T}
 cat out_urls.tab.txt
 ```
+
+
+#Downloading threaded 
+
+Also below is a script that can be used on the url table created by getSraRunsFromAccIds.py above.   
+This depends on the URLGrabber python library
+
+[downloadSraFromTable.py](scripts/python/downloadSraFromTable.py)
+
+```{r, engine='bash'}
+pip install URLGrabber
+```
+
+***downloadSraFromTable.py***
+```{r , engine='python', eval = F}
+#!/usr/bin/env python
+import shutil, os, argparse, sys, stat, urllib
+
+from urlgrabber.grabber import URLGrabber
+import requests
+import csv
+from joblib import Parallel, delayed
+import traceback
+
+def get_file_if_size_diff(url, d):
+    fn = url.split('/')[-1]
+    out_fnp = os.path.join(d, fn)
+    g = URLGrabber(reget = "simple")
+    locFnp = g.urlgrab(url, out_fnp)
+    return locFnp
+    
+def downloadFileAttempt(url, directoryName):
+    try:
+        return get_file_if_size_diff(url, directoryName)
+    except Exception, err:
+        print ("Failed  to download " + str(url) + " to " + str(directoryName) + ", mess: " + str(err))
+        traceback.print_exc()
+        
+def parse_args_downloadFiles():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--sraUrlFnp', type=str, required = True, help = "SRA url file created by getSraRunsFromAccIds.py")
+    parser.add_argument('--outDirectory', type=str, default = "./", help = "The directory in which to download the files")
+    parser.add_argument('--ncpus', type=int, default = 1, help = "Number of cpus to use")
+    return parser.parse_args()   
+
+
+if __name__ == "__main__":
+    args = parse_args_downloadFiles()
+    with open(args.sraUrlFnp, 'rb') as urlFile:
+        reader =  csv.DictReader(urlFile, delimiter='\t')
+        urls = []
+        for row in reader:
+            urls.append(row.get("url"))
+        downloadedFiles = Parallel(n_jobs = args.ncpus)(delayed(downloadFileAttempt)(url, "./") for url in urls )
+        print(downloadedFiles)
+
+```
+
+## Running the script
+```{r , engine='bash', eval = F}
+./downloadSraFromTable.py --sraUrlFnp out_urls.tab.txt --ncpus 6 --outDirectory ./
+```
+
+```{r test_download_of_sra, engine='bash', eval = T, echo = FALSE}
+scripts/python/downloadSraFromTable.py --sraUrlFnp out_urls.tab.txt --ncpus 6 --outDirectory ./
+```
+
+The script will often time out on requests especially if you do a lot of downloads at once but simply re-run script will allow you to download all the files since it will check to see if a file is already downloaded and is the right file, so the script can be re-ran until all files have finished downloading. 
 
 
 
