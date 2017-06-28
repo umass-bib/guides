@@ -323,7 +323,7 @@ The script will often time out on requests especially if you do a lot of downloa
 ./downloadSraFromTable.py --sraUrlFnp out_urls.tab.txt --ncpus 6 --outDirectory ./
 ```
 
-```{r test_download_of_sra, engine='bash', eval = T, echo = FALSE}
+```{r test_download_of_sra_take2, engine='bash', eval = T, echo = FALSE}
 scripts/python/downloadSraFromTable.py --sraUrlFnp out_urls.tab.txt --ncpus 6 --outDirectory ./
 ```
 
