@@ -1,0 +1,24 @@
+---
+title: "Create an Ineractive heatmap powered by d3 "
+author: "Nicholas Hathaway"
+---
+
+```{r setup, echo=FALSE}
+library(knitr)
+opts_chunk$set(message=FALSE, warning=FALSE, comment = "", cache = TRUE)
+options(width = 120)
+
+```
+
+
+##d3heatmap  
+Site https://github.com/rstudio/d3heatmap 
+```{r, echo = T, eval = T}
+if (!require("devtools")) install.packages("devtools")
+devtools::install_github("rstudio/d3heatmap")
+library(d3heatmap)
+d3heatmap(mtcars, scale = "column", colors = "Spectral")
+```
+
+
+

@@ -1,0 +1,26 @@
+---
+title: "Create dynamic grpahs using dygraphs"
+author: "Nicholas Hathaway"
+---
+
+```{r setup, echo=FALSE}
+library(knitr)
+opts_chunk$set(message=FALSE, warning=FALSE, comment = "", cache = TRUE)
+options(width = 120)
+
+```
+
+
+##dygraphs  
+Site https://rstudio.github.io/dygraphs/  
+
+```{r, echo = T}
+require(dygraphs)
+lungDeaths <- cbind(mdeaths, fdeaths)
+dygraph(lungDeaths)
+
+```
+
+
+
+

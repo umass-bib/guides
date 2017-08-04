@@ -29,6 +29,17 @@ navbar:
       menu:
         - text: "Write Fasta"
           href: r_writeFasta.html
+        - text: "---------"
+        - text: "Interactive R Libs Examples"
+        - text: "d3Heatmap"
+          href: r_d3Heatmap.html
+        - text: "d3Network"
+          href: r_d3Network.html
+        - text: "dygraphs"
+          href: r_dygraphs.html
+        - text: "metricsgraphics"
+          href: r_metricsgraphics.html
+        
       
 output:
   html_document:

@@ -62,9 +62,11 @@ Get the sequence of one of the chromosomes
 ```{r , engine='python'}
 #!/usr/bin/env python
 
-import twobitreader
+import twobitreader,os
+from os.path import expanduser
+home = expanduser("~")
 
-hg38_genome = twobitreader.TwoBitFile("/Users/nick/.ucscgenome/hg38.2bit") 
+hg38_genome = twobitreader.TwoBitFile(os.path.join(home, ".ucscgenome/hg38.2bit") )
 chr9 = hg38_genome["chr9"]
 print(chr9.get_slice(133255319, 133255568))
 
@@ -75,9 +77,11 @@ print(chr9.get_slice(133255319, 133255568))
 #!/usr/bin/env python
 
 import twobitreader
+from os.path import expanduser
+home = expanduser("~")
 
 with open("hg38.fasta", "w") as output:
-    twobit = twobitreader.TwoBitFile("/Users/nick/.ucscgenome/hg38.2bit")
+    twobit = twobitreader.TwoBitFile(os.path.join(home, ".ucscgenome/hg38.2bit") )
     twobitreader.twobit_reader(twobit,write=output)
 ```
 
