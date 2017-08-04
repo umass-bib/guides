@@ -31,13 +31,19 @@ import shutil, os, argparse, sys, stat
 import requests
 import csv, io
 import traceback
+import xmltodict, json
 
 class SRAUtils:
     '''
     Prefixes can be found here http://www.ddbj.nig.ac.jp/sub/prefix.html for DDBJ, ENA/EBI (ERA), and NCBI(SRA)
+    
+    Some interesting information here http://trace.ddbj.nig.ac.jp/dra/submission_e.html#Organization_of_metadata_objects
     '''
     @staticmethod
     def getInfoTableFromSearchTerm(search):
+        #return types and databases listed here
+        #https://www.ncbi.nlm.nih.gov/books/NBK25499/table/chapter4.T._valid_values_of__retmode_and/?report=objectonly
+        #
         payload = {"save": "efetch","db": "sra","rettype" : "runinfo", "term" : search };
         r = requests.get('http://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi', params=payload)
         if 200 ==  r.status_code:
@@ -55,6 +61,33 @@ class SRAUtils:
                 return infoRows
         else:
             raise Exception("Error in downloading from " + str(r.url) + " got response code " + str(r.status_code))
+        
+    @staticmethod
+    def getDictTableFromSearchTerm(search):
+        #return types and databases listed here
+        #https://www.ncbi.nlm.nih.gov/books/NBK25499/table/chapter4.T._valid_values_of__retmode_and/?report=objectonly
+        #@todo need to add way to select only what is needed
+        payload = {"save": "efetch","db": "sra","rettype" : "full", "term" : search };
+        r = requests.get('http://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi', params=payload)
+        if 200 ==  r.status_code:
+            if r.text.isspace():
+                raise Exception("Got blank string from " + str(r.url ))
+            else:
+                return xmltodict.parse(r.text);
+                """
+                reader_list = csv.DictReader(io.StringIO())
+                infoRows = []
+                for row in reader_list:
+                    infoRows.append(row)
+                if 0 == len(infoRows):
+                    raise Exception('Found %d entries in SRA for "%s" when expecting at least 1' % (len(infoRows), search))
+                else:        
+                    return infoRows
+                return infoRows
+                """
+        else:
+            raise Exception("Error in downloading from " + str(r.url) + " got response code " + str(r.status_code))
+        
         
     @staticmethod
     def getRunAccsFromInfoTable(infoTab):
@@ -162,6 +195,26 @@ class SRAUtils:
         else:        
             return runInfo   
     
+    @staticmethod
+    def getInfoFromBioSampleAcc(bioSample):
+        '''
+        SAMD     DDBJ 
+        SAME     ENA/EBI
+        SAMN     NCBI 
+        '''
+        if not bioSample.startswith("SAME") and not bioSample.startswith("SAMD") and not bioSample.startswith("SAMN"):
+            raise Exception("bioProject should start with SAME, SAMD, and SAMN, not: " + bioSample)
+        infoTab = SRAUtils.getInfoTableFromSearchTerm(bioSample)
+        runInfo = []
+        for row in infoTab:
+            if bioSample == str(row.get('BioSample')):
+                runInfo.append(row)
+        if 0 == len(runInfo):
+            raise Exception('Found %d entries in SRA for "%s" when expecting at least 1' % (len(runInfo), bioSample))
+        else:        
+            return runInfo   
+        
+    
     
         
     @staticmethod
@@ -176,8 +229,11 @@ class SRAUtils:
             return SRAUtils.getInfoFromRunAcc(identifier)
         elif identifier.startswith("ERA") or identifier.startswith("SRA"):
             return SRAUtils.getInfoFromSubmissionAcc(identifier)
+        elif identifier.startswith("SAME") or identifier.startswith("SAMD") or identifier.startswith("SAMN"):
+            #SAME, SAMD, and SAMN
+            return SRAUtils.getInfoFromBioSampleAcc(identifier)
         elif identifier.startswith("PRJDA"):
-            #DDBJ archvie bioproject prefix PRJNA 
+            #DDBJ archvie bioproject prefix PRJNA SAMEA2796165
             return SRAUtils.getInfoFromBioProjectAcc(identifier)
         elif identifier.startswith("PRJNA"):
             #short read archvie bioproject prefix PRJNA
@@ -226,6 +282,7 @@ def runGetRunsFromSampleAcc():
 
 if __name__ == "__main__":
     runGetRunsFromSampleAcc()
+
 
 
 
